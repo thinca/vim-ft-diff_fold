@@ -6,16 +6,21 @@
 
 setlocal foldmethod=expr foldexpr=DiffFold(v:lnum)
 
+let s:file_pat = '^\%(Index:\|diff\) '
 function! DiffFold(lnum)
   let line = getline(a:lnum)
   let next = getline(a:lnum + 1)
-  if line =~ '^[-=]\{3}'
+  if line =~ '^[-=]\{3} ' && getline(a:lnum - 2) !~# s:file_pat
     return 1
-  elseif next =~ '^[-=]\{3}'
+  elseif next =~ '^[-=]\{3} ' && getline(a:lnum - 1) !~# s:file_pat
     return '<1'
-  elseif line =~ '^@@'
+  elseif line =~ s:file_pat
+    return 1
+  elseif next =~ s:file_pat
+    return '<1'
+  elseif line =~ '^@@ '
     return 2
-  elseif next =~ '^@@'
+  elseif next =~ '^@@ '
     return '<2'
   endif
   return '='
