@@ -6,6 +6,18 @@
 
 setlocal foldmethod=expr foldexpr=DiffFold(v:lnum)
 
+if exists('b:undo_ftplugin')
+  let b:undo_ftplugin .= ' | '
+else
+  let b:undo_ftplugin = ''
+endif
+let b:undo_ftplugin .= 'setl fdm< fde<'
+
+
+if exists('*DiffFold')
+  finish
+endif
+
 let s:file_pat = '^\%(Index:\|diff\) '
 function! DiffFold(lnum)
   let line = getline(a:lnum)
@@ -25,11 +37,3 @@ function! DiffFold(lnum)
   endif
   return '='
 endfunction
-
-
-if exists('b:undo_ftplugin')
-  let b:undo_ftplugin .= ' | '
-else
-  let b:undo_ftplugin = ''
-endif
-let b:undo_ftplugin .= 'setl fdm< fde<'
